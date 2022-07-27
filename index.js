@@ -1,10 +1,13 @@
 require('dotenv').config()
 const express = require('express');
-const {signUp, login} = require('./controllers/user.controller')
+const {signUp, login, forgotPassword, resetPassword} = require('./controllers/user.controller')
+const {authenticate} = require('./middleware/auth')
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { reset } = require('nodemon');
 const app = express();
 const port = 3000;
+
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -18,6 +21,8 @@ app.get('/status', (req, res) => {
 // User related
 app.post('/signup', signUp) 
 app.post('/login', login)
+app.post('/forgotpassword', forgotPassword)
+app.post('/resetpassword', authenticate, resetPassword)
 
 app.listen(port, () =>{
     console.log(`Server is running on port ${port} `);
