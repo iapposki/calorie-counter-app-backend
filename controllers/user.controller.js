@@ -1,4 +1,4 @@
-const {createUser} = require('../services/user.service.js')
+const {createUser, validateUsernamePassword} = require('../services/user.service.js')
 
 
 const signUp = async (req, res) => {
@@ -39,6 +39,29 @@ const signUp = async (req, res) => {
     }
 }
 
+const login = async (req, res) => {
+    const {email, password} = req.body
+    if (!(email && password)){
+        res.status(400).json({msg: 'Email or password missing'})
+    } else {
+        try{
+            const response = await validateUsernamePassword(email, password)
+            if (response && response.pass) {
+                res.status(200).json({msg: 'SignIn successful.'})
+                console.log('SignIn successful for email', email)
+            } else {
+                res.status(401).json({msg: 'Invalid credentials.'})
+                console.log('Invalid credentials')
+            }
+        } catch (error) {
+            console.log(error.stack)
+            res.status(500).json({msg: 'Something Failed'})
+        }
+    }
+}
+
+
 module.exports = {
     signUp,
+    login,
 }

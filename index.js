@@ -1,6 +1,6 @@
 require('dotenv').config()
 const express = require('express');
-const {signUp} = require('./controllers/user.controller')
+const {signUp, login} = require('./controllers/user.controller')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
@@ -17,7 +17,7 @@ app.get('/status', (req, res) => {
 
 // User related
 app.post('/signup', signUp) 
-
+app.post('/login', login)
 
 app.listen(port, () =>{
     console.log(`Server is running on port ${port} `);
