@@ -12,24 +12,31 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(30)
-  email       String    @unique
-  phoneNumber String    @db.VarChar(10)
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(30)
+  email       String        @unique
+  phoneNumber String        @db.VarChar(10)
   password    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   dob         DateTime?
-  isVerified  Boolean   @default(false)
-  food        Food[]
+  isVerified  Boolean       @default(false)
+  foodList    FoodEntries[]
 }
 
-model Food {
+model FoodCatalogue {
   id         Int     @id @default(autoincrement())
   name       String  @db.VarChar(30)
   calories   Int // (per 100 grams of item)
   vegetarian Boolean
+}
 
-  User   User? @relation(fields: [userId], references: [id])
-  userId Int?
+model FoodEntries {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(30)
+  calories   Int // (per 100 grams of food item)
+  vegetarian Boolean
+  addedAt    DateTime?
+  User       User?     @relation(fields: [userId], references: [id])
+  userId     Int?
 }

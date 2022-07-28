@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express');
 const {signUp, login, forgotPassword, resetPassword, sendTokenUserVerification, verifyUser} = require('./controllers/user.controller')
+const {addFoodEntry} = require('./controllers/food.controller')
 const {authenticate} = require('./middleware/auth')
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -25,6 +26,11 @@ app.post('/verification', sendTokenUserVerification)
 app.post('/user-verify', authenticate, verifyUser)
 app.post('/forgotpassword', forgotPassword)
 app.post('/resetpassword', authenticate, resetPassword)
+
+app.post('/add-food-entry', authenticate, addFoodEntry)
+
+// Food related
+
 
 app.listen(port, () =>{
     console.log(`Server is running on port ${port} `);
