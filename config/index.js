@@ -10,6 +10,7 @@ const config = {
         myNumber : process.env["TWILIO_MY_NUMBER"],
     },
     authSecret : process.env["AUTH_SECRET"] || "secret",
+    emailSecret : process.env["EMAIL_VERIFICATION_SECRET"] || "secret0",
     serverAddress : process.env["SERVER_ADDRESS"] || "http://localhost:3000/",
     redisServerAddress : process.env["REDIS_SERVER"] || "redis://localhost:6379",
     razorpayKeys : {

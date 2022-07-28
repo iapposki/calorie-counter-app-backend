@@ -1,6 +1,6 @@
-const {createUser, validateUsernamePassword, getUserByEmail, generateToken, updatePassword, toggleVerification} = require('../services/user.service.js')
+const {createUser, validateUsernamePassword, getUserByEmail, generateToken, generateTokenForVerification, updatePassword, toggleVerification} = require('../services/user.service.js')
 const {sendEmail} = require('../services/email.service');
-
+const {emailSecret} = require('../config')
 
 const signUp = async (req, res) => {
     
@@ -107,11 +107,31 @@ const resetPassword = async (req, res) => {
 const verifyUser = async (req, res) => {
     const {email} = req.userDetails;
     const user = await getUserByEmail(email);
-    if (user.isVerified) {
-        res.status(200).json({msg: 'User already verified'});
+    if (emailSecret !== req.userDetails.emailSecret){
+        res.status(400).json({msg: 'Invalid token'})
     } else {
-        toggleVerification(email, false);
-        res.status(200).json({msg: 'User verified'});
+        if (user.isVerified) {
+            res.status(200).json({msg: 'User already verified'});
+        } else {
+            toggleVerification(email, false);
+            res.status(200).json({msg: 'User verified'});
+        }
+    }
+}
+
+const sendTokenUserVerification = async (req, res) => {
+    const {email} = req.body
+    const user = await getUserByEmail(email)
+    if (!user){
+        res.status(400).json({msg: "User not found."})
+    } else {
+        const token = await generateTokenForVerification(user.name, user.email)
+        await sendEmail({
+            to: email,
+            subject: 'Email Verification',
+            text: `Hi ${user.name},\n\nPlease click on the following link to verify your email address:\n\nhttp://localhost:3000/user-verify?token=${token}\n\nRegards,\n\nCalorie Counter App`,
+            html: '<h1>Email Verification</h1>'
+        })
     }
 }
 
@@ -121,5 +141,6 @@ module.exports = {
     signUp,
     forgotPassword,
     resetPassword,
-    verifyUser
+    verifyUser,
+    sendTokenUserVerification
 }

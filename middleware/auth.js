@@ -11,9 +11,9 @@ const authenticate = async (req, res, next) => {
     // console.log(token)
     if (!token) {return res.status(401).json({msg: 'Unauthorized'})}
     try {
-        const {name, email} = jwt.verify(token, authSecret)
+        const {name, email, emailSecret} = jwt.verify(token, authSecret)
         // console.log(resp)
-        req.userDetails = {name, email}
+        req.userDetails = {name, email, emailSecret}
         next();
     } catch (error) {
         console.log(error.stack)

@@ -1,6 +1,6 @@
 require('dotenv').config()
 const express = require('express');
-const {signUp, login, forgotPassword, resetPassword} = require('./controllers/user.controller')
+const {signUp, login, forgotPassword, resetPassword, sendTokenUserVerification, verifyUser} = require('./controllers/user.controller')
 const {authenticate} = require('./middleware/auth')
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -21,6 +21,8 @@ app.get('/status', (req, res) => {
 // User related
 app.post('/signup', signUp) 
 app.post('/login', login)
+app.post('/verification', sendTokenUserVerification)
+app.post('/user-verify', authenticate, verifyUser)
 app.post('/forgotpassword', forgotPassword)
 app.post('/resetpassword', authenticate, resetPassword)
 
