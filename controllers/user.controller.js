@@ -72,7 +72,7 @@ const forgotPassword = async (req, res) => {
             if (!user){
                 res.status(404).json({msg: 'User not found'});
             };
-            const token = await generateToken(user.name, user.email, expiry='10m');
+            const token = await generateToken(user.name, user.email, user.role, expiry='10m');
             await sendEmail({
                 to: email,
                 subject: 'Reset Password',
@@ -132,8 +132,10 @@ const sendTokenUserVerification = async (req, res) => {
             text: `Hi ${user.name},\n\nPlease click on the following link to verify your email address:\n\nhttp://localhost:3000/user-verify?token=${token}\n\nRegards,\n\nCalorie Counter App`,
             html: '<h1>Email Verification</h1>'
         })
+        res.status(200).json({msg: "Kindly open your mail to continue the verification process."})
     }
 }
+
 
 
 module.exports = {
@@ -142,5 +144,5 @@ module.exports = {
     forgotPassword,
     resetPassword,
     verifyUser,
-    sendTokenUserVerification
+    sendTokenUserVerification,
 }

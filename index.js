@@ -1,11 +1,10 @@
 require('dotenv').config()
 const express = require('express');
-const {signUp, login, forgotPassword, resetPassword, sendTokenUserVerification, verifyUser} = require('./controllers/user.controller')
-const {addFoodEntry} = require('./controllers/food.controller')
+const {signUp, login, forgotPassword, resetPassword, sendTokenUserVerification, verifyUser, } = require('./controllers/user.controller')
+const {addFoodEntry, getFoodEntries, updateFoodEntry, deleteFoodEntry, getCaloriesByDate, customEntryStats} = require('./controllers/food.controller')
 const {authenticate} = require('./middleware/auth')
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { reset } = require('nodemon');
 const app = express();
 const port = 3000;
 
@@ -27,9 +26,15 @@ app.post('/user-verify', authenticate, verifyUser)
 app.post('/forgotpassword', forgotPassword)
 app.post('/resetpassword', authenticate, resetPassword)
 
-app.post('/add-food-entry', authenticate, addFoodEntry)
-
 // Food related
+app.post('/add-food-entry', authenticate, addFoodEntry) 
+app.post('/get-food-entries', authenticate, getFoodEntries)                 // ++admin
+app.post('/update-food-entry', authenticate, updateFoodEntry)
+app.post('/delete-food-entry', authenticate, deleteFoodEntry)               // admin
+app.post('/get-calories-by-day-for-user',authenticate, getCaloriesByDate)
+app.post('/get-entry-stats', authenticate, customEntryStats)  
+
+
 
 
 app.listen(port, () =>{

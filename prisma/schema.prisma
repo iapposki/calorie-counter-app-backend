@@ -11,12 +11,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model User {
   id          Int           @id @default(autoincrement())
   name        String        @db.VarChar(30)
   email       String        @unique
   phoneNumber String        @db.VarChar(10)
   password    String
+  role        Int          @default(0)
+  dailyCalorieLimit     Int @default(2100)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   dob         DateTime?
@@ -24,19 +27,14 @@ model User {
   foodList    FoodEntries[]
 }
 
-model FoodCatalogue {
-  id         Int     @id @default(autoincrement())
-  name       String  @db.VarChar(30)
-  calories   Int // (per 100 grams of item)
-  vegetarian Boolean
-}
 
 model FoodEntries {
   id         Int       @id @default(autoincrement())
   name       String    @db.VarChar(30)
-  calories   Int // (per 100 grams of food item)
+  calories   Int 
   vegetarian Boolean
+  eatenAt    DateTime
   addedAt    DateTime?
-  User       User?     @relation(fields: [userId], references: [id])
-  userId     Int?
+  User       User     @relation(fields: [userId], references: [id])
+  userId     Int
 }

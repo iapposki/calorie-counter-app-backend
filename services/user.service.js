@@ -4,8 +4,8 @@ const md5 = require('md5')
 const jwt = require('jsonwebtoken')
 const {authSecret, emailSecret} = require('../config')
 
-const generateToken = async (name, email, expiry='1h') => {
-    const token = jwt.sign({name, email}, authSecret, {expiresIn:expiry});
+const generateToken = async (name, email, role, expiry='1h') => {
+    const token = jwt.sign({name, email, role}, authSecret, {expiresIn:expiry});
     return token
 }
 
@@ -28,7 +28,7 @@ const createUser = async (userDetails) => {
 const validateUsernamePassword = async (email, password) => {
     const user = await prisma.user.findFirst({where: {email : email,}})
     if (user) {
-        const token = await generateToken(user.name, user.email)
+        const token = await generateToken(user.name, user.email, user.role)
         return {pass : user.password === md5(password), token : token}
     }
     return false
@@ -58,6 +58,7 @@ const toggleVerification = async (email, isVerified) => {
  
 
 
+
 module.exports = {
     createUser,
     validateUsernamePassword,
@@ -66,4 +67,5 @@ module.exports = {
     updatePassword,
     toggleVerification,
     generateTokenForVerification
+
 }
